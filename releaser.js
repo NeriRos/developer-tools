@@ -2,8 +2,8 @@
 const { execSync } = require("child_process");
 const args = process.argv.slice(2);
 
-function getLastCommitHash() {
-  return execSync("git rev-parse HEAD").toString().trim().slice(0, 7);
+function getLastCommitHash(length = 6) {
+  return execSync("git rev-parse HEAD").toString().trim().slice(0, length+1);
 }
 
 function getBranchName() {
@@ -31,7 +31,6 @@ function checkIfTagExists(tagName) {
 }
 
 function release() {
-  const commitHash = getLastCommitHash();
   const environment = args[0];
 
   if (["test", "prod"].indexOf(environment) === -1) {
@@ -39,6 +38,7 @@ function release() {
     return;
   }
 
+  const commitHash = getLastCommitHash();
   const releaseName = `${environment}-${commitHash}`;
 
   createAndPushRelease(releaseName);
