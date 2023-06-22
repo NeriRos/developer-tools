@@ -45,48 +45,9 @@ function checkIfTagExists(tagName) {
     }
 }
 
-function checkIfCommitExists(commitHash) {
-    try {
-        const res = execSync(`git rev-parse --verify --quiet ${commitHash}`);
-        return res.toString().trim() === commitHash;
-    } catch (error) {
-        return false;
-    }
-}
-
-// function revertCommit(commitHash) {
-//     try {
-//         if (checkIfCommitExists(commitHash)) {
-//             execSync(`git revert ${commitHash}`);
-//             console.log(`Reverted commit ${commitHash}`);
-//         }
-//     } catch (error) {
-//
-//     }
-// }
-
-// function cherryPickCommit(commitHash) {
-//     try {
-//         if (checkIfCommitExists(commitHash)) {
-//             execSync(`git cherry-pick --all ${commitHash}`);
-//             console.log(`Cherry picked commit ${commitHash}`);
-//         }
-//     } catch (error) {
-//
-//     }
-// }
-
 function release(environment, excludedCommitHash) {
-    // if (excludedCommitHash && environment === 'prod') {
-    //     revertCommit(excludedCommitHash);
-    // }
-
     const commitHash = getLastCommitHash();
     const releaseName = `${environment}-${commitHash}`;
 
     createAndPushRelease(releaseName);
-
-    // if (excludedCommitHash && environment === 'prod') {
-    //     cherryPickCommit(excludedCommitHash);
-    // }
 }
