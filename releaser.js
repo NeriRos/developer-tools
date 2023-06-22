@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const { execSync } = require('child_process');
+const {execSync} = require('child_process');
 const args = process.argv.slice(2);
 const environment = args[0];
 const excludedCommitHash = args[1];
@@ -25,7 +25,13 @@ function createAndPushRelease(releaseName) {
         console.log(`Release ${releaseName} already exists`);
         return;
     }
-    console.log(`Releasing ${releaseName} on ${getBranchName()}`);
+    const branchName = getBranchName();
+    if (releaseName.startsWith("prod-") && branchName !== 'master') {
+        console.log(`Production releases can only be created from master branch. Current branch is ${branchName}`);
+        return;
+    }
+
+    console.log(`Releasing ${releaseName} on ${branchName}`);
     execSync(`git tag ${releaseName}`);
     execSync(`git push origin ${releaseName}`);
 }
